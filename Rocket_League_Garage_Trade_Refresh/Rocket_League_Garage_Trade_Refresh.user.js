@@ -38,7 +38,7 @@
 
 (async () => {
 
-    const config = new GM.Config({
+    const config = new Config({
         id: "RLR_config",
         title: "Rocket League Garage Trade Refresh Settings",
         fields: {
@@ -127,8 +127,8 @@
         timeController: {
             setTime: function (trade, value, scale) {
                 value = Math.floor(value);
-                let c_num = trade.time.num.html();
-                let c_scale = trade.time.scale.html();
+                const c_num = trade.time.num.html();
+                const c_scale = trade.time.scale.html();
                 if (c_num !== value) trade.time.num.html(value);
                 if (value !== 1) scale += "s";
                 if (c_scale !== scale) trade.time.scale.html(scale);
@@ -137,8 +137,8 @@
                 return Number(value) * RLR.timeController.unit.get(scale);
             },
             getTimeFromString: function (string) {
-                let scales = /(?:second|minute|hour|day|week|month|year)s?/.exec(string);
-                let nums = /\d+/.exec(string);
+                const scales = /(?:second|minute|hour|day|week|month|year)s?/.exec(string);
+                const nums = /\d+/.exec(string);
                 if (!scales || !nums || scales.length === 0 || nums.length === 0)
                     return null;
                 return RLR.timeController.getTime(nums[0], scales[0]);
@@ -165,14 +165,14 @@
         },
         refresher: {
             autoRefresh: async function (retryOnError = true, maxRetryCount = 5, retryCount = 0) {
-                let trades = Object.keys(RLR.trades).sort(function (a, b) {
+                const trades = Object.keys(RLR.trades).sort(function (a, b) {
                     return RLR.trades[b].time.active - RLR.trades[a].time.active;
                 });
                 for (let t of trades) {
                     if (!RLR.trades.hasOwnProperty(t))
                         continue;
                     if (RLR.trades[t].time.active >= 900 && !RLR.trades[t].refresh.pause.state && RLR.trades[t].refresh.state === "dead" && RLR.trades[t].refresh.fails < RLR.settings.MAX_FAIL_COUNT) {
-                        let success = await RLR.refresher.refresh(t);
+                        const success = await RLR.refresher.refresh(t);
                         if (!success && retryOnError && retryCount < maxRetryCount && (RLR.trades[t].state === "site error" || RLR.trades[t].state.startsWith("request error")))
                             RLR.refresher.autoRefresh(retryOnError, maxRetryCount, ++retryCount);
                         break;
@@ -180,23 +180,23 @@
                 }
             },
             getTradePOST: function (trade) {
-                let e = $(trade);
+                const e = $(trade);
                 if (typeof e.data("item") === "undefined")
                     return;
-                let obj = {
+                const obj = {
                     itemId: e.data("item"),
                     paint: e.data("paint") || 0,
                     cert: e.data("cert") || 0
                 };
-                let quantity = e.data("quantity");
+                const quantity = e.data("quantity");
                 if (quantity && quantity > 1)
                     obj.quantity = quantity;
                 return obj;
             },
             getTradesPOST: function (container) {
-                let ar = [];
+                const ar = [];
                 $(container).find(".rlg-trade-display-item").each(function () {
-                    let item = RLR.refresher.getTradePOST($(this));
+                    const item = RLR.refresher.getTradePOST($(this));
                     if (item)
                         ar.push(item);
                 });
@@ -211,7 +211,7 @@
                         url: "https://rocket-league.com/trade/edit?trade=" + RLR.trades[t].id,
                         method: "get",
                         onload: function (response) {
-                            let w = $(response.responseText);
+                            const w = $(response.responseText);
                             if (RLR.refresher.checkForError(w)) {
                                 RLR.trades[t].refresh.state = "site error";
                                 RLR.refresher.fail(t);
@@ -219,14 +219,14 @@
                                 return;
                             }
                             RLR.trades[t].refresh.state = "loaded edit page";
-                            let form = w.find("form[action*=\"functions/editTrade.php\"]");
+                            const form = w.find("form[action*=\"functions/editTrade.php\"]");
                             if (form.length === 0) {
                                 RLR.trades[t].refresh.state = "form not found";
                                 RLR.refresher.fail(t);
                                 resolve(false);
                                 return;
                             }
-                            let formdata = form.serializeObject();
+                            const formdata = form.serializeObject();
                             formdata.ownerItems = JSON.stringify(RLR.refresher.getTradesPOST(w.find("#rlg-youritems")));
                             formdata.tradeItems = JSON.stringify(RLR.refresher.getTradesPOST(w.find("#rlg-theiritems")));
                             RLR.trades[t].refresh.state = "sent refresh request";
@@ -238,15 +238,15 @@
                                     "Content-Type": "application/x-www-form-urlencoded"
                                 },
                                 onload: function (response) {
-                                    let w = $(response.responseText);
-                                    let meta = w.find(".rlg-comment .is--admin").first().parent().find(".rlg-comment-meta").first().text();
+                                    const w = $(response.responseText);
+                                    const meta = w.find(".rlg-comment .is--admin").first().parent().find(".rlg-comment-meta").first().text();
                                     if (!meta) {
                                         RLR.trades[t].refresh.state = "no comment meta found";
                                         RLR.refresher.fail(t);
                                         resolve(false);
                                         return;
                                     }
-                                    let time = RLR.timeController.getTimeFromString(meta);
+                                    const time = RLR.timeController.getTimeFromString(meta);
                                     if (!time) {
                                         RLR.trades[t].refresh.state = "failed to parse comment meta";
                                         RLR.refresher.fail(t);
@@ -261,7 +261,7 @@
                                     }
 
                                     if (RLR.settings.SUCCESS_MSG_MANDATORY) {
-                                        let msg = w.find(".rlg-site-popup__text").text();
+                                        const msg = w.find(".rlg-site-popup__text").text();
                                         if (!msg.includes("edit") || !msg.includes("success")) {
                                             RLR.trades[t].refresh.state = "no success msg received";
                                             RLR.refresher.fail(t);
@@ -321,11 +321,11 @@
 
             //JQuery extensions
             $.fn.serializeObject = function () {
-                let arrayData = this.serializeArray();
-                let objectData = {};
+                const arrayData = this.serializeArray();
+                const objectData = {};
 
                 $.each(arrayData, function () {
-                    let value = typeof this.value !== "undefined" ? this.value : '';
+                    const value = typeof this.value !== "undefined" ? this.value : '';
 
                     if (typeof objectData[this.name] !== "undefined") {
                         if (!objectData[this.name].push)
@@ -340,12 +340,12 @@
             //polyfills & extensions
             if (!String.prototype.endsWith)
                 String.prototype.endsWith = function (searchString, position) {
-                    let subjectString = this.toString();
+                    const subjectString = this.toString();
                     if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
                         position = subjectString.length;
                     }
                     position -= searchString.length;
-                    let lastIndex = subjectString.indexOf(searchString, position);
+                    const lastIndex = subjectString.indexOf(searchString, position);
                     return lastIndex !== -1 && lastIndex === position;
                 };
             if (!String.prototype.startsWith)
@@ -365,8 +365,8 @@
                         continue;
                     RLR.trades[t].time.active++;
                     if (RLR.settings.UPDATE_TIMER) {
-                        let s = RLR.timeController.unit.getCurrent(RLR.trades[t].time.active);
-                        let v = RLR.timeController.unit[s];
+                        const s = RLR.timeController.unit.getCurrent(RLR.trades[t].time.active);
+                        const v = RLR.timeController.unit[s];
                         if (RLR.trades[t].time.active % v === 0)
                             RLR.timeController.setTime(RLR.trades[t], RLR.trades[t].time.active / v, s);
                     }
@@ -375,7 +375,7 @@
 
             if (!RLR.isSinglePostPage) {
                 if (RLR.settings.AUTO_REFRESH) {
-                    let autoRefresh = function () {
+                    const autoRefresh = function () {
                         RLR.refresher.autoRefresh();
                         RLR.timeController.atiid = setTimeout(autoRefresh, (RLR.settings.AUTO_REFRESH_INTERVAL + RLR.settings.AUTO_REFRESH_INTERVAL / 2 * RLR.utils.normalRandom()) * 1000);
                     };
@@ -384,7 +384,7 @@
 
                 //add 'Add Trade Offer' Button
                 if (RLR.settings.ADD_NEWTRADE_SHORTCUT && $("body").hasClass("rlg-body-profileTrades")) {
-                    let otherbtn = $("a[href=\"?showDisabled\"]");
+                    const otherbtn = $("a[href=\"?showDisabled\"]");
                     otherbtn.before(`<a href='https://rocket-league.com/trading/new' class='${otherbtn.attr("class")}' style='${otherbtn.attr("style")} margin-left: 5px;' target="_blank">ADD TRADE OFFER</a>`);
                 }
 
@@ -397,7 +397,7 @@
                     RLR.timeController.pbiid = setInterval(function () {
                         for (let t in RLR.trades)
                             if (RLR.trades.hasOwnProperty(t) && RLR.trades[t].progress) {
-                                let p = RLR.trades[t].time.active / RLR.timeController.getTime(15, "minute");
+                                const p = RLR.trades[t].time.active / RLR.timeController.getTime(15, "minute");
                                 RLR.trades[t].progress.bar.css("width", 100 * (p < 0 ? 0 : p > 1 ? 1 : p) + "%");
                             }
                     }, RLR.settings.PROGRESS_BAR_UPDATE_INTERVAL);
@@ -408,6 +408,8 @@
                             if (RLR.trades.hasOwnProperty(t))
                                 RLR.addProgress(t);
                 }
+
+                RLR.addConfigButton();
             }
 
             //add refresh feature
@@ -422,6 +424,14 @@
             RLR.utils.loadStyle("https://cdn.jsdelivr.net/npm/amaranjs@0.5.5/dist/css/amaran.min.css");
             RLR.utils.loadStyle("https://cdn.jsdelivr.net/npm/amaranjs@0.5.5/dist/css/animate.min.css");
         },
+        addConfigButton: function () {
+            const container = $(('.rlg-btn-primary[href*="/trading/new"]')).parent();
+            container.prev().removeClass('col-3-5').addClass('col-2-5');
+            container.removeClass('col-2-5').addClass('col-3-5');
+            const btn = $(`<a class="rlg-btn-primary" style="float: right; margin-top: 25px; margin-left: 5px;" target="_blank">Trade Refresh Settings</a>`);
+            btn.click(() => config.showDialog());
+            container.prepend(btn);
+        },
         addRefreshFunc: function (t) {
             return RLR.trades[t].refresh.e.click(function (e) {
                 e.preventDefault();
@@ -435,13 +445,13 @@
             return RLR.trades[t].progress;
         },
         compare: async function (retryOnError = true, maxRetryCount = 5, retryCount = 0) {
-            let millis = new Date().getTime();
+            const millis = new Date().getTime();
             $.get(location.href, function (data) {
-                let w = $(data);
+                const w = $(data);
                 if (retryOnError && retryCount < maxRetryCount && RLR.refresher.checkForError(w))
                     return RLR.compare(retryOnError, maxRetryCount, ++retryCount);
-                let delay = Math.round((new Date().getTime() - millis) / 2000);
-                let trades = RLR.genTrades(w);
+                const delay = Math.round((new Date().getTime() - millis) / 2000);
+                const trades = RLR.genTrades(w);
                 for (let t in RLR.trades)
                     if (RLR.trades.hasOwnProperty(t))
                         if (!(t in trades))
@@ -460,7 +470,7 @@
                         }
                     } else RLR.appendTrade(trades[t]);
                 }
-                let tcounter = $(".rlg-grid span[style*=opacity]");
+                const tcounter = $(".rlg-grid span[style*=opacity]");
                 if (tcounter.text().match(/\(\d+\)/))
                     tcounter.text("(" + Object.keys(RLR.trades).length + ")");
             });
@@ -472,23 +482,23 @@
             delete RLR.trades[t];
         },
         appendTrade: function (trade) {
-            let t = trade.id;
-            trade.e.appendTo(RLR.tradeContainer)
+            const t = trade.id;
+            trade.e.appendTo(RLR.tradeContainer);
             RLR.trades[t] = trade;
             RLR.addRefreshFunc(t);
             if (RLR.settings.SHOW_PROGRESS_BAR)
                 RLR.addProgress(t);
         },
         genTrades: function (d) {
-            let obj = {};
+            const obj = {};
             $(d).find(".rlg-trade-display-container.is--user").each(function () {
-                let trade = new RLR.Trade($(this));
+                const trade = new RLR.Trade($(this));
                 obj[trade.id] = trade;
             });
             return obj;
         },
         Trade: function (e) {
-            let self = this;
+            const self = this;
             self.e = e;
             self.time = {};
             self.time.g = e.find(".rlg-trade-display-added");
@@ -519,7 +529,7 @@
                     await self.refresh.pause.set(await GM.getValue(self.id + "_paused") !== true);
                 };
                 self.refresh.pause.set = async function (state) {
-                    let img = self.refresh.pause.icon;
+                    const img = self.refresh.pause.icon;
                     img.data("toggled", state);
                     img.prop("src", img.data((state ? "toggled" : "normal") + "-src"));
                     self.refresh.pause.state = state;
@@ -576,13 +586,6 @@
     };
 
 
-    if (location.href.includes("rocket-league.com"))
-        RLR.init();
-    else if (config) {
-        if (config.greasyfork.isConfigPage(28685))
-            config.greasyfork.addConfigPage(28685);
-        else if (config.greasyfork.isScriptPage(28685))
-            config.greasyfork.addConfigTab_openConfigPage(28685);
-    }
+    RLR.init();
 
 })();
