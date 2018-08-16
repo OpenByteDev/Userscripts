@@ -6,7 +6,7 @@
 // @namespace	    openbyte/wdrc
 // @include	        http*://wikipedia.org/*
 // @include	        http*://*.wikipedia.org/*
-// @version	        1.0
+// @version	        1.0.0
 // @license         MIT License
 // @encoding        utf-8
 // @compatible      firefox
