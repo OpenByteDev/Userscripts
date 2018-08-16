@@ -17,6 +17,7 @@
 // ==/UserScript==
 /*jshint esversion: 6 */
 
+"use strict";
 
 
 if (!Node.prototype.remove)

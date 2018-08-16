@@ -65,9 +65,10 @@
 /*jshint esversion: 6 */
 //old icons -> https://paste.ee/p/BwJdD
 
+"use strict";
+
 
 (async () => {
-    'use strict';
 
     if (!String.prototype.isEmpty) {
         String.prototype.isEmpty = function() {

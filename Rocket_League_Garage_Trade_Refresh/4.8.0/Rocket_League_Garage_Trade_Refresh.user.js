@@ -34,6 +34,7 @@
 // @grant           GM.xmlHttpRequest
 // ==/UserScript==
 
+"use strict";
 
 
 (async () => {

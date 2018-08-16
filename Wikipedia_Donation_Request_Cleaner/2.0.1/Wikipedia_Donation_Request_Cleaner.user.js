@@ -19,5 +19,7 @@
 // ==/UserScript==
 /* jshint esversion: 6 */
 
+"use strict";
+
 
 GM.addStyle("html body #centralNotice, html body [id*=frbanner], html body [id*=frb-inline] { display: none !important; }");

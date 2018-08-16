@@ -15,6 +15,8 @@
 // @grant           none
 // ==/UserScript==
 
+"use strict";
+
 
 if (document.querySelector(".rlg-error, #cf-error-details") !== null)
     location.reload();

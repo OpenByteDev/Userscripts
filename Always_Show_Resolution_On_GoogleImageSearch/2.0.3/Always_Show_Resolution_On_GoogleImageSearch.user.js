@@ -27,6 +27,9 @@
 /*jshint esversion: 6 */
 
 
+"use strict";
+
+
 (async () => {
 
     RegExp.quote = function(str) {
