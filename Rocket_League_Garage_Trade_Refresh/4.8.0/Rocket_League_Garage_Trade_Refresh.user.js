@@ -5,7 +5,7 @@
 // @author          OpenByte
 // @icon            https://image.ibb.co/g9caQm/rocket_league_garage_footer.png
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
-// @require         https://cdn.rawgit.com/OpenByteDev/Userscripts/6ecf30cc/Userscript_Config_API/Userscript_Config_API.user.js
+// @require         https://cdn.rawgit.com/OpenByteDev/Userscripts/32e48e33/Userscript_Config_API/1.0.0/Userscript_Config_API.user.js
 // @require         https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js
 // @require         https://cdn.jsdelivr.net/npm/amaranjs@0.5.5/dist/js/jquery.amaran.min.js
 // @include         http*://rocket-league.com/trades/*
