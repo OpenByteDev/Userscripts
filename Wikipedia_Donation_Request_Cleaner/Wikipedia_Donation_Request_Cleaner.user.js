@@ -3,7 +3,7 @@
 // @author          OpenByte
 // @description	    Removes Wikipedia Donation Request.
 // @icon            https://i.imgur.com/mQeok0M.png
-// @namespace	    openbytewdrc
+// @namespace	    openbyte/wdrc
 // @include	        http*://wikipedia.org/*
 // @include	        http*://*.wikipedia.org/*
 // @version	        1.0

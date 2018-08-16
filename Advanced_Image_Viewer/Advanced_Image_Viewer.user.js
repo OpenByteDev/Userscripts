@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Advanced Image Viewer
-// @namespace       autoimagefullsizeobp
+// @namespace       openbyte/advimgv
 // @author          OpenByte
 // @icon            https://image.ibb.co/mNU5Vm/icon.png
 // @require 	   	https://greasyfork.org/scripts/28366-userscript-config-page-api/code/Userscript%20Config%20Page%20API.js?version=225772
