@@ -4,17 +4,14 @@
 // @description     Adds a refresh functionality to rocket-league.com
 // @author          OpenByte
 // @icon            https://image.ibb.co/g9caQm/rocket_league_garage_footer.png
-// @require         https://greasyfork.org/scripts/34555-greasemonkey-4-polyfills/code/Greasemonkey%204%20Polyfills.js?version=227108
-// @require         https://greasyfork.org/scripts/35671-userscript-config-api/code/Userscript%20Config%20API.js?version=233168
+// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
+// @require         https://cdn.rawgit.com/OpenByteDev/Userscripts/6ecf30cc/Userscript_Config_API/Userscript_Config_API.user.js
 // @require         https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js
-// @require         https://greasyfork.org/scripts/28681-jquery-copycss/code/jQuerycopyCSS.js?version=185888
 // @require         https://cdn.jsdelivr.net/npm/amaranjs@0.5.5/dist/js/jquery.amaran.min.js
 // @include         http*://rocket-league.com/trades/*
 // @include         http*://*.rocket-league.com/trades/*
 // @include         http*://rocket-league.com/trade/*
 // @include         http*://*.rocket-league.com/trade/*
-// @include         http*://greasyfork.org/*/scripts/28685*
-// @include         http*://*.greasyfork.org/*/scripts/28685*
 // @connect         rocket-league.com
 // @connect         cdn.jsdelivr.net
 // @connect         *
@@ -24,7 +21,7 @@
 // @compatible      chrome
 // @compatible      opera
 // @noframes
-// @version         4.6.0
+// @version         4.7.0
 // @grant           GM_addStyle
 // @grant           GM_setValue
 // @grant           GM_getValue
@@ -323,16 +320,6 @@
                 return false;
 
             //JQuery extensions
-            $.fn.getStyleString = function (only, except) {
-                let style = this.getStyles(only, except);
-                let str = "";
-                for (let rule in style)
-                    if (style.hasOwnProperty(rule))
-                        str += rule.replace(/[A-Z]/g, function (m) {
-                            return "-" + m.toLowerCase();
-                        }) + ": " + style[rule] + "; ";
-                return str;
-            };
             $.fn.serializeObject = function () {
                 let arrayData = this.serializeArray();
                 let objectData = {};
@@ -429,7 +416,7 @@
                     RLR.addRefreshFunc(t);
 
             //add css
-            GM.addStyle(".rlg-trade-display-refresh, .rlg-trade-display-pause { " + $(".rlg-trade-display-bookmark").getStyleString() + " height: initial;} .fa-refresh-o { " + $(".rlg-trade-display-bookmark i").getStyleString() + " width: 16px; height: auto; } iframe.hidden { width: 0px; height: 0px; position: absolute; top: -10000px; left: -10000px; } .rotate { animation-name: rotation; animation-duration: 0.75s; animation-iteration-count: infinite; animation-timing-function: linear; transform-origin: 50% 50%; } @keyframes rotation { from {transform: rotate(360deg);} to {transform: rotate(0deg);} } .row.progress-line { height: 5px; } .progress-value { height: 5px; background-color: #00A3FF; width: 0; margin: 0; padding: 0; } .amaran-wrapper { font-family: Arial, sans-serif; font-size: 14px; }");
+            GM.addStyle(".rlg-trade-display-refresh, .rlg-trade-display-pause { margin-left: 11px; background: none; border: none; } .fa-refresh-o, .fa-pause-o { height: 10px; } iframe.hidden { width: 0px; height: 0px; position: absolute; top: -10000px; left: -10000px; } .rotate { animation-name: rotation; animation-duration: 0.75s; animation-iteration-count: infinite; animation-timing-function: linear; transform-origin: 50% 50%; } @keyframes rotation { from {transform: rotate(360deg);} to {transform: rotate(0deg);} } .row.progress-line { height: 5px; } .progress-value { height: 5px; background-color: #00A3FF; width: 0; margin: 0; padding: 0; } .amaran-wrapper { font-family: Arial, sans-serif; font-size: 14px; }");
 
             //load toasting styles
             RLR.utils.loadStyle("https://cdn.jsdelivr.net/npm/amaranjs@0.5.5/dist/css/amaran.min.css");
