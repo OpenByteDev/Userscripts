@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name            Advanced Image Viewer
-// @namespace       openbyte/advimgv
+// @namespace       autoimagefullsizeobp
 // @author          OpenByte
 // @icon            https://image.ibb.co/mNU5Vm/icon.png
-// @require 	   	https://greasyfork.org/scripts/28366-userscript-config-page-api/code/Userscript%20Config%20Page%20API.js?version=225772
+// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
+// @require         https://greasyfork.org/scripts/35671-userscript-config-api/code/Userscript%20Config%20API.js?version=233203
 // @connect         google.com
 // @connect         google.net
 // @connect         google.co.uk
@@ -34,10 +35,11 @@
 // @connect         google.no
 // @connect         google.pt
 // @connect         google.ro
+// @connect         google.hu
 // @connect         google.sm
 // @connect         google.es
 // @connect         google.tr
-// @connect         greasyfork.org
+// @connect         api.imgur.com
 // @connect         *
 // @description     Enhances Image viewing on Open Image in new Tab. Features include: Automatic Scaling, Zoom, Display Resolution, Optimized Rendering and many more...
 // @include         *
@@ -47,7 +49,7 @@
 // @compatible      firefox
 // @compatible      chrome
 // @compatible      opera
-// @version         9.0.1
+// @version         9.5.2
 // @run-at          document-start
 // @grant           GM_addStyle
 // @grant           GM_setValue
@@ -64,53 +66,6 @@
 //old icons -> https://paste.ee/p/BwJdD
 
 
-//https://arantius.com/misc/greasemonkey/imports/greasemonkey4-polyfill.js
-
-if (typeof GM === "undefined") {
-    GM = {
-        "log": console.log
-    };
-}
-
-if (typeof GM_addStyle == 'undefined') {
-  	var GM_addStyle = function (aCss) {
-    		'use strict';
-    		let head = document.getElementsByTagName('head')[0];
-    		if (head) {
-      			let style = document.createElement('style');
-      			style.setAttribute('type', 'text/css');
-      			style.textContent = aCss;
-      			head.appendChild(style);
-      			return style;
-    		}
-    		return null;
-  	}
-}
-GM.addStyle = GM_addStyle;
-
-Object.entries({
-    'GM_deleteValue': 'deleteValue',
-    'GM_getResourceURL': 'getResourceUrl',
-    'GM_getValue': 'getValue',
-    'GM_info': 'info',
-    'GM_listValues': 'listValues',
-    'GM_notification': 'notification',
-    'GM_openInTab': 'openInTab',
-    'GM_setClipboard': 'setClipboard',
-    'GM_setValue': 'setValue',
-    'GM_xmlhttpRequest': 'xmlHttpRequest',
-}).forEach(([oldKey, newKey]) => {
-    let old = this[oldKey];
-    if (old) GM[newKey] = function() {
-        new Promise((resolve, reject) => {
-            try {
-              	resolve(old.apply(this, arguments));
-            } catch (e) {
-              	reject(e);
-            }
-        });
-    }
-});
 
 (async () => {
     'use strict';
@@ -169,7 +124,7 @@ Object.entries({
     };
 
     let isSVGDocument = function () {
-        return de.nodeName.toLowerCase() === "svg";
+        return false; //de.nodeName.toLowerCase() === "svg";
     };
 
     let redirectBack = async function () {
@@ -180,48 +135,72 @@ Object.entries({
     let getRealSVGUrl = function () {
         return location.href.substring(0, loc.length - 5);
     };
-  
 
-    let execute = function () {
 
-        let DEFAULTS = {
-            "MAX_SCALE": -1,
-            "MIN_SCLAE": -1,
-            "PADDING": 5,
-            "ZOOM": 2.5,
-            "AUTO_ZOOM_SCROLL": true,
-            "DISPLAY_RESOLUTION": true,
-            "GOOGLE_REVERSE_SEARCH_BUTTON": true,
-            "GLOBAL_BACKGROUND": "rgb(30, 30, 30)",
-            "IMAGE_BACKGROUND": "transparent"
-        };
+    let execute = async function () {
 
-        if (typeof CONFIG !== "undefined") {
-            CONFIG.GREASYFORK.init(27738, [
-                CONFIG.generateNumberOption("MAX_SCALE", "Maximum Scale: ", DEFAULTS["MAX_SCALE"], 1),
-                CONFIG.generateNumberOption("MIN_SCALE", "Minimum Scale: ", DEFAULTS["MIN_SCALE"], 1),
-                CONFIG.generateNumberOption("PADDING", "Padding: ", DEFAULTS["PADDING"], 2),
-                CONFIG.generateNumberOption("ZOOM", "Zoom Scale: ", DEFAULTS["ZOOM"], 3),
-                CONFIG.generateCheckboxOption("AUTO_ZOOM_SCROLL", "Auto Scroll in Zoom: ", DEFAULTS["AUTO_ZOOM_SCROLL"], 3),
-                CONFIG.generateCheckboxOption("DISPLAY_RESOLUTION", "Display Resolution: ", DEFAULTS["DISPLAY_RESOLUTION"], 4),
-                CONFIG.generateCheckboxOption("GOOGLE_REVERSE_SEARCH_BUTTON", "Display Google Reverse Image Search Button: ", DEFAULTS["GOOGLE_REVERSE_SEARCH_BUTTON"], 5),
-                CONFIG.generateTextOption("GLOBAL_BACKGROUND", "Global Background: ", DEFAULTS["GLOBAL_BACKGROUND"], 6),
-                CONFIG.generateTextOption("IMAGE_BACKGROUND", "Image Background: ", DEFAULTS["IMAGE_BACKGROUND"], 6)
-            ]);
-        } else var CONFIG = {
-            GREASYFORK: {
-                isConfigPage: false
+        const config = new GM.Config({
+            id: "AIVConfig",
+            title: "Advanced Image Viewer Config",
+            fields: {
+                "MAX_SCALE": {
+                    label: "Maximum Scale: ",
+                    type: "number",
+                    default: -1
+                },
+                "MIN_SCALE": {
+                    label: "Minimum Scale: ",
+                    type: "number",
+                    default: -1
+                },
+                "PADDING": {
+                    label: "Padding: ",
+                    type: "number",
+                    default: 5
+                },
+                "ZOOM": {
+                    label: "Zoom Scale: ",
+                    type: "number",
+                    default: 2.5
+                },
+                "AUTO_ZOOM_SCROLL": {
+                    label: "Auto Scroll in Zoom: ",
+                    type: "checkbox",
+                    default: true
+                },
+                "DISPLAY_RESOLUTION": {
+                    label: "Display Resolution: ",
+                    type: "checkbox",
+                    default: true
+                },
+                "DISPLAY_MENU": {
+                    label: "Display Menu: ",
+                    type: "checkbox",
+                    default: true
+                },
+                "PRELOAD_GOOGLE_REVERSE_SEARCH_LINK": {
+                    label: "Preload Google Reverse Image Search Link: ",
+                    type: "checkbox",
+                    default: false
+                },
+                "GLOBAL_BACKGROUND": {
+                    label: "Global Background: ",
+                    type: "text",
+                    default: "rgb(30, 30, 30)"
+                },
+                "IMAGE_BACKGROUND": {
+                    label: "Image Background: ",
+                    type: "text",
+                    default: "transparent"
+                }
             },
-            getValue: function (name) {
-                return DEFAULTS[name];
-            },
-            getValueAsNumber: function (name) {
-                return Number(DEFAULTS[name]);
+            greasyfork: {
+                id: 27738
             }
-        };
+        });
 
 
-        if (!CONFIG.GREASYFORK.isConfigPage) {
+        if (!config.greasyfork.isScriptPage()) {
             updateShorts();
 
             let isImageDocument = function () {
@@ -231,28 +210,26 @@ Object.entries({
             if (!isImageDocument())
                 return;
 
-            const MAX_SCALE = CONFIG.getValueAsNumber("MAX_SCALE"); //-1 --> INFINITE
-            const MIN_SCALE = CONFIG.getValueAsNumber("MIN_SCALE"); //-1 --> NONE
-            const PADDING = CONFIG.getValueAsNumber("PADDING"); //%
-            const ZOOM = CONFIG.getValueAsNumber("ZOOM"); // 0 --> DISABLED
-            const AUTO_ZOOM_SCROLL = CONFIG.getValue("AUTO_ZOOM_SCROLL"); //true --> ENABLED
-            const DISPLAY_RESOLUTION = CONFIG.getValue("DISPLAY_RESOLUTION"); //true --> ENABLED
-            const GOOGLE_REVERSE_SEARCH_BUTTON = CONFIG.getValue("GOOGLE_REVERSE_SEARCH_BUTTON"); //true --> ENABLED
-            const GLOBAL_BACKGROUND = CONFIG.getValue("GLOBAL_BACKGROUND"); //[empty string] --> UNCHANGED
-            const IMAGE_BACKGROUND = CONFIG.getValue("IMAGE_BACKGROUND"); //[empty string] --> UNCHANGED
+            const MAX_SCALE = await config.getValue("MAX_SCALE"); //-1 --> INFINITE
+            const MIN_SCALE = await config.getValue("MIN_SCALE"); //-1 --> NONE
+            const PADDING = await config.getValue("PADDING"); //%
+            const ZOOM = await config.getValue("ZOOM"); // 0 --> DISABLED
+            const AUTO_ZOOM_SCROLL = await config.getValue("AUTO_ZOOM_SCROLL"); //true --> ENABLED
+            const DISPLAY_RESOLUTION = await config.getValue("DISPLAY_RESOLUTION"); //true --> ENABLED
+            const DISPLAY_MENU = await config.getValue("DISPLAY_MENU"); //true --> ENABLED
+            const PRELOAD_GOOGLE_REVERSE_SEARCH_LINK = await config.getValue("PRELOAD_GOOGLE_REVERSE_SEARCH_LINK"); //true --> ENABLED
+            const GLOBAL_BACKGROUND = await config.getValue("GLOBAL_BACKGROUND"); //[empty string] --> UNCHANGED
+            const IMAGE_BACKGROUND = await config.getValue("IMAGE_BACKGROUND"); //[empty string] --> UNCHANGED
 
-            let imgs = d.getElementsByTagName("img");
-            if (imgs.length === 1)
-                db.innerHTML = imgs[0].outerHTML;
+
             let img = d.getElementsByTagName("img")[0];
-            db.innerHTML = `<div class="theContainer horizontal">
-                                <figure class="theFigure">
-                                    ${img.outerHTML}
-                                </figure>
-                            </div>`;
-            let container = db.getElementsByClassName("theContainer")[0];
-            let figure = container.getElementsByClassName("theFigure")[0];
-            img = figure.getElementsByTagName("img")[0];
+            let container = d.createElement("div");
+            container.classList.add("theContainer", "horizontal");
+            db.appendChild(container);
+            let figure = d.createElement("figure");
+            figure.classList.add("theFigure");
+            container.appendChild(figure);
+            figure.appendChild(img);
             img.classList.add("theImg");
             const size = 100 - PADDING * 2;
 
@@ -261,6 +238,9 @@ Object.entries({
                             padding: 0;
                             box-sizing: border-box;
                         } 
+												html, body {
+                        		font-family: Arial;
+                        }
                         .theContainer {
                             position: absolute;
                             cursor: initial;
@@ -297,6 +277,7 @@ Object.entries({
                             text-align: center;
                             width: 100%;
                             height: 100%;
+														image-orientation: from-image;
                         }
                         .horizontal .theFigure, .horizontal .theImg {
                             width: 100%;
@@ -306,6 +287,7 @@ Object.entries({
                             width: auto;
                             height: 100%;
                         }`);
+
 
             let whenImageLoaded = function (f) {
                 if (img.complete) f();
@@ -335,52 +317,158 @@ Object.entries({
                     imgprop = (img.naturalWidth || img.clientWidth) / (img.naturalHeight || img.clientHeight);
                 replaceClass2(container, prop < imgprop, "horizontal", "vertical");
             };
-            let addGRISButton = function (href) {
-                const c = "GoogleReverseImageSearch";
-                if (document.getElementsByClassName(c).length !== 0)
-                    return false;
-                let b = document.createElement("A");
-                b.className = c;
-                b.href = href;
-                let i = document.createElement("IMG");
-                i.src = "data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2aWV3Qm94PSIwIDAgNDggNDgiPjxkZWZzPjxwYXRoIGlkPSJhIiBkPSJNNDQuNSAyMEgyNHY4LjVoMTEuOEMzNC43IDMzLjkgMzAuMSAzNyAyNCAzN2MtNy4yIDAtMTMtNS44LTEzLTEzczUuOC0xMyAxMy0xM2MzLjEgMCA1LjkgMS4xIDguMSAyLjlsNi40LTYuNEMzNC42IDQuMSAyOS42IDIgMjQgMiAxMS44IDIgMiAxMS44IDIgMjRzOS44IDIyIDIyIDIyYzExIDAgMjEtOCAyMS0yMiAwLTEuMy0uMi0yLjctLjUtNHoiLz48L2RlZnM+PGNsaXBQYXRoIGlkPSJiIj48dXNlIHhsaW5rOmhyZWY9IiNhIiBvdmVyZmxvdz0idmlzaWJsZSIvPjwvY2xpcFBhdGg+PHBhdGggY2xpcC1wYXRoPSJ1cmwoI2IpIiBmaWxsPSIjRkJCQzA1IiBkPSJNMCAzN1YxMWwxNyAxM3oiLz48cGF0aCBjbGlwLXBhdGg9InVybCgjYikiIGZpbGw9IiNFQTQzMzUiIGQ9Ik0wIDExbDE3IDEzIDctNi4xTDQ4IDE0VjBIMHoiLz48cGF0aCBjbGlwLXBhdGg9InVybCgjYikiIGZpbGw9IiMzNEE4NTMiIGQ9Ik0wIDM3bDMwLTIzIDcuOSAxTDQ4IDB2NDhIMHoiLz48cGF0aCBjbGlwLXBhdGg9InVybCgjYikiIGZpbGw9IiM0Mjg1RjQiIGQ9Ik00OCA0OEwxNyAyNGwtNC0zIDM1LTEweiIvPjwvc3ZnPg==";
-                let t = document.createElement("SPAN");
-                t.innerText = "More sizes";
-                b.appendChild(i);
-                b.appendChild(t);
-                db.appendChild(b);
+            if (DISPLAY_MENU) {
+                let addMenu = async function () {
+                    let startLoading = function () {
+                        db.classList.add("loading");
+                    };
+                    let stopLoading = function () {
+                        db.classList.remove("loading");
+                    };
+                    let createMenuItem = function (label, action, icon) {
+                        let item = d.createElement("li");
+                        item.classList.add("menu-item");
+                        if (typeof icon === "string") {
+                            let img = d.createElement("img");
+                            img.classList.add("menu-item-icon");
+                            img.setAttribute("src", icon);
+                            item.appendChild(img);
+                        }
+                        let labelc;
+                        const actype = typeof action;
+                        if (actype === "string") {
+                            labelc = d.createElement("a");
+                            labelc.setAttribute("href", action);
+                        } else {
+                            labelc = d.createElement("span");
+                            if (actype === "function")
+                                item.addEventListener("click", action, false);
+                        }
+                        labelc.classList.add("menu-item-label");
+                        let labelt = d.createTextNode(label);
+                        labelc.appendChild(labelt);
+                        item.appendChild(labelc);
+                        return item;
+                    };
 
-                let style = GM.addStyle(`.${c} { 
-                                position: absolute;
-                                top: 10px;
-                                right: 10px;
-                                text-decoration: none;
-                                color: #212121;
-                                background-color: #f3f3f3;
-                                padding: 4px 6px;
-                                border-radius: 4px;
-                                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);
-                                font-family: Arial;
-                                cursor: pointer;
-                                display: flex;
-                                flex-direction: row;
-                                width: 125px;
-                                height: 30px;
-                            } 
-                            .${c} img { 
-                                position: static; 
-                                height: 100%;
-                                margin-right: 2px; 
-                            } 
-                            .${c} span { 
-                                line-height: 22px;
-                            } 
-                            .${c} > * { 
-                                flex-shrink: 1;
-                                flex-grow: 1;
-                            }`);
-                console.log(style);
-            };
+                    let menu = d.createElement("section");
+                    menu.classList.add("menu", "collapsed");
+                    let menutrigger = d.createElement("img");
+                    menutrigger.classList.add("menu-trigger");
+                    menutrigger.setAttribute("src", "data:image/svg+xml;charset=utf-8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE2LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPg0KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCINCgkgd2lkdGg9IjYxMnB4IiBoZWlnaHQ9IjYxMnB4IiB2aWV3Qm94PSIwIDAgNjEyIDYxMiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNjEyIDYxMjsiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+DQoJPGcgaWQ9Im1lbnUiPg0KCQk8Zz4NCgkJCTxwYXRoIGQ9Ik0wLDk1LjYyNXYzOC4yNWg2MTJ2LTM4LjI1SDB6IE0wLDMyNS4xMjVoNjEydi0zOC4yNUgwVjMyNS4xMjV6IE0wLDUxNi4zNzVoNjEydi0zOC4yNUgwVjUxNi4zNzV6Ii8+DQoJCTwvZz4NCgk8L2c+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8L3N2Zz4=");
+                    menutrigger.addEventListener("click", function () {
+                        menu.classList.toggle("collapsed");
+                    }, false);
+                    menu.appendChild(menutrigger);
+                    let menuitemlist = d.createElement("ul");
+                    menuitemlist.classList.add("menu-item-list");
+                    if (!location.protocol.includes("file") && !loc.startsWith("data:image")) {
+                        const url = "https://www.google.com/searchbyimage?&image_url=" + location.href;
+                        let getGRISUrl = async function () {
+                            return new Promise((resolve, reject) => {
+                                GM.xmlHttpRequest({
+                                    url: url,
+                                    method: "GET",
+                                    onload: function (data) {
+                                        let doc = new DOMParser().parseFromString(data.responseText, "text/html");
+                                        let e = doc.querySelector("a[href*=\"tbs=simg:CAQ\"]:not([href*=\",isz:\"])");
+                                        if (e === null)
+                                            resolve(url);
+                                        let href = e.getAttribute("href");
+                                        if (!href.includes("google."))
+                                            href = "//www.google.com" + href;
+                                        resolve(href);
+                                    },
+                                    onerror: function (data) {
+                                        reject();
+                                    }
+                                });
+                            });
+                        };
+
+                        if (PRELOAD_GOOGLE_REVERSE_SEARCH_LINK) {
+                            let href = await getGRISUrl();
+                            menuitemlist.appendChild(createMenuItem("Google Reverse Image Search", href));
+                        } else {
+                            menuitemlist.appendChild(createMenuItem("Google Reverse Image Search", async function () {
+                                startLoading();
+                                let href = await getGRISUrl();
+                                stopLoading();
+                                location.href = href;
+                            }));
+                        }
+                    }
+                    if (!isSVGDocument() && !loc.endsWith("svg.view")) {
+                        menuitemlist.appendChild(createMenuItem("Upload to Imgur", function () {
+                            startLoading();
+                            GM.xmlHttpRequest({
+                                url: "https://api.imgur.com/3/image",
+                                method: "POST",
+                                headers: {
+                                    "Authorization": "Client-ID 6660e28e848ee74",
+                                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
+                                },
+                                data: "&image=" + location.href,
+                                onload: function (data) {
+                                    let response = JSON.parse(data.responseText);
+                                    stopLoading();
+                                    alert(response.data.link);
+                                }
+                            });
+                        }, false));
+                    }
+                    menuitemlist.appendChild(createMenuItem("Open Settings", "https://greasyfork.org/de/scripts/27738-advanced-image-viewer/config"));
+                    menu.appendChild(menuitemlist);
+                    db.appendChild(menu);
+
+                    GM.addStyle(`.menu {
+                                    position: absolute;
+                                    top: 0;
+                                    right: 0;
+                                    left: unset;
+                                    bottom: unset;
+                                    display: flex;
+                                    flex-direction: column;
+                                    background-color: #fafafa;
+                                    color: #000;
+                                }
+                                .menu-trigger {
+                                    position: static;
+                                    padding: 10px;
+                                    margin: 0 0 0 auto;
+                                    width: 50px;
+                                    height: 50px;
+                                }
+                                .menu-item-list {
+                                    list-style-type: none;
+                                    padding-bottom: 10px;
+                                }
+                                .menu-item {
+                                    margin: 20px 25px;
+                                    text-align: center;
+                                }
+                                .menu-item-label {
+                                    text-decoration: none;
+                                    color: inherit;
+                                }
+                                .menu-item-icon {
+                                    position: static;
+                                    height: 100%;
+                                    width: auto;
+                                    margin-right: 15px;
+                                }
+                                .menu-trigger, .menu-item {
+                                    cursor: pointer;
+                                }
+                                .menu.collapsed .menu-item-list {
+                                    display: none;
+                                }
+                                .loading, .loading * {
+                                    cursor: progress;
+                                }`);
+                };
+                addMenu();
+            }
 
             if (!GLOBAL_BACKGROUND.isEmpty())
                 GM.addStyle(`body {
@@ -460,38 +548,21 @@ Object.entries({
                 });
                 db.appendChild(rd);
             }
-            if (GOOGLE_REVERSE_SEARCH_BUTTON && !location.protocol.includes("file") && !loc.startsWith("data:image")) {
-                const url = "https://www.google.com/searchbyimage?&image_url=" + loc;
-                GM.xmlHttpRequest({
-                    url: url,
-                    method: "GET",
-                    onload: function (data) {
-                        let doc = new DOMParser().parseFromString(data.responseText, "text/html");
-                        let e = doc.querySelector("a[href*=\"tbs=simg:CAQ\"]:not([href*=\",isz:\"])");
-                        if (e !== null) {
-                            let href = e.getAttribute("href");
-                            if (!href.includes("google."))
-                                href = "//www.google.com" + href;
-                            addGRISButton(href);
-                        }
-                    }
-                });
-            }
             whenImageLoaded(function () {
                 if (img.naturalWidth !== 0) {
                     if (MAX_SCALE !== -1)
-                        GM.addStyle(`img { 
+                        GM.addStyle(`.theImg { 
                                         max-width: ${img.naturalWidth * MAX_SCALE}px !important; 
                                         max-height: ${img.naturalHeight * MAX_SCALE}px !important; 
                                     }`);
                     if (MIN_SCALE !== -1)
-                        GM.addStyle(`img { 
+                        GM.addStyle(`.theImg { 
                                         min-width: ${img.naturalWidth * MIN_SCALE}px !important; 
                                         min-height: ${img.naturalHeight * MIN_SCALE}px !important; 
                                     }`);
                 }
                 if (Math.min(img.naturalWidth || img.clientWidth, img.naturalHeight || img.clientHeight) < 1000)
-                    GM.addStyle(`img { 
+                    GM.addStyle(`.theImg { 
                                     image-rendering: optimizeQuality;
                                     image-rendering: -moz-crisp-edges;
                                     image-rendering: -o-crisp-edges;
@@ -512,16 +583,16 @@ Object.entries({
 
     let run = async function () {
         if (loc.endsWith(".svg.view")) {
-            if (isSVGDocument()) {
+            if (isSVGDocument() || de.tagName === "Error") {
                 await GM.setValue("ignore_redirect", "true");
                 redirectBack();
             } else {
-                de.innerHTML = 	`<head>
-                                 </head>
-                                 <body>
-                                 	<img src="${getRealSVGUrl()}" />
-                                 </body>`;
-                execute();
+                de.innerHTML = `<head>
+                                </head>
+                                <body>
+                                		<img src="${getRealSVGUrl()}" />
+                                </body>`;
+                await execute();
             }
         } else {
             if (isSVGDocument() && location.protocol.toLowerCase() !== "file:") {
@@ -529,11 +600,11 @@ Object.entries({
                     await GM.setValue("redirected_from", loc);
                     location.href += ".view";
                 } else await GM.setValue("ignore_redirect", "false");
-            } else execute();
+            } else await execute();
         }
     };
 
-      console.log(GM);
+
     if (await GM.getValue("redirected_from") === loc)
         redirectBack();
     else if (await GM.getValue("do_not_run") !== loc)

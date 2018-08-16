@@ -2,7 +2,7 @@
 // @name            Userscript Config API
 // @namespace       openbyte/usconfig
 // @author          OpenByte
-// @require         https://greasyfork.org/scripts/34555-greasemonkey-4-polyfills/code/Greasemonkey%204%20Polyfills.js?version=227108
+// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @description     API for implementing Config Pages for Userscripts.
 // @license         MIT License
 // @encoding        utf-8

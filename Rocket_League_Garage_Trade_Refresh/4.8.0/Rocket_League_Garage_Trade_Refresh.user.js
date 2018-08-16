@@ -21,7 +21,7 @@
 // @compatible      chrome
 // @compatible      opera
 // @noframes
-// @version         4.7.0
+// @version         4.8.0
 // @grant           GM_addStyle
 // @grant           GM_setValue
 // @grant           GM_getValue
@@ -108,7 +108,7 @@
 
     let RLR = {};
     RLR = {
-        version: "4.6.0",
+        version: "4.8.0",
         settings: {
             UPDATE_TIMER: await config.getValue("UPDATE_TIMER2"),
             MAX_FAIL_COUNT: await config.getValue("MAX_FAIL_COUNT2"),

@@ -11,10 +11,10 @@
 // @compatible      firefox
 // @compatible      chrome
 // @compatible      opera
-// @version         2.1.1
+// @version         2.1.2
 // @grant           none
 // ==/UserScript==
 
 
-if (document.getElementsByClassName("rlg-error").length != 0)
-  location.reload(); 
+if (document.getElementsByClassName("rlg-error").length !== 0)
+    location.reload();
