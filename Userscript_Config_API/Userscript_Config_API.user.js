@@ -13,7 +13,6 @@
 // @grant           GM.addStyle
 // @grant           GM.setValue
 // @grant           GM.getValue
-
 // ==UserLibrary==
 // @name            Userscript Config API
 // @version         1.0.0
