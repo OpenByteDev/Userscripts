@@ -2,4 +2,4 @@
 
 Remove wikipedia donation requests.
 
-[Download](https://raw.githubusercontent.com/OpenByteDev/Userscripts/master/Easy_10_Minute_Mail/Easy_10_Minute_Mail.user.js)
+[Download](https://raw.githubusercontent.com/OpenByteDev/Userscripts/master/Wikipedia_Donation_Request_Cleaner/Wikipedia_Donation_Request_Cleaner.user.js)
