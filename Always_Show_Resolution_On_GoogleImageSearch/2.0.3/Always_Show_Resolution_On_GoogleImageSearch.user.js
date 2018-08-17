@@ -27,18 +27,18 @@
 /*jshint esversion: 6 */
 
 
-"use strict";
+'use strict';
 
 
 (async () => {
 
     RegExp.quote = function(str) {
-        return (str+'').replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
+        return (str+'').replace(/[.?*+^$[\]\\(){}|-]/g, '\\$&');
     };
 
     function extractNumbers(str, dots) {
         return str.split(
-            new RegExp("[^\\d" + RegExp.quote(typeof dots !== "string" || dots.length === 0 ? "." : dots) + "]+")
+            new RegExp('[^\\d' + RegExp.quote(typeof dots !== 'string' || dots.length === 0 ? '.' : dots) + ']+')
         )
             .map(function (e) {
                 return parseFloat(e);
@@ -53,31 +53,31 @@
     }
 
 
-    const paramname = "tbs";
-    const param = "&tbs=imgo:1";
-    const id = "redirected_from";
+    const paramname = 'tbs';
+    const param = '&tbs=imgo:1';
+    const id = 'redirected_from';
 
 
     if (await GM.getValue(id) === location.href) {
         GM.deleteValue(id);
         window.history.back();
-    } else if (location.href.match("(\\?|\\&)" + paramname + "=")) {
+    } else if (location.href.match('(\\?|\\&)' + paramname + '=')) {
         if (location.href.includes(param)) {
-            const menu = "#hdtbMenus";
-            document.addEventListener("DOMContentLoaded", function () {
-                const menu = document.getElementById("hdtbMenus");
-                menu.style = "display: none;";
-                menu.className = "hdtb-td-c";
+            const menu = '#hdtbMenus';
+            document.addEventListener('DOMContentLoaded', function () {
+                const menu = document.getElementById('hdtbMenus');
+                menu.style = 'display: none;';
+                menu.className = 'hdtb-td-c';
                 const style = window.getComputedStyle(menu);
-                const timeout = (max(extractNumbers(style.getPropertyValue("transition-delay"))) || 0) + (max(extractNumbers(style.getPropertyValue("transition-duration"))) || 0);
+                const timeout = (max(extractNumbers(style.getPropertyValue('transition-delay'))) || 0) + (max(extractNumbers(style.getPropertyValue('transition-duration'))) || 0);
                 setTimeout(function () {
-                    menu.style = "";
+                    menu.style = '';
                 }, timeout * 1000);
             }, false);
         }
     } else {
         await GM.setValue(id, location.href);
-        const index = location.href.indexOf("tbm=isch")+8;
+        const index = location.href.indexOf('tbm=isch')+8;
         location.href = location.href.substring(0, index) + param + location.href.substring(index);
     }
 })();

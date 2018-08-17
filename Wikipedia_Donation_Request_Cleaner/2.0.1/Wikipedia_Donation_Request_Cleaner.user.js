@@ -1,6 +1,6 @@
 ﻿// ==UserScript==
 // @name            Wikipedia Donation Request Cleaner
-// @namespace       openbytewdrc
+// @namespace       openbyte/wdrc
 // @author          OpenByte
 // @description     Removes Wikipedia Donation Request.
 // @icon            https://i.imgur.com/mQeok0M.png
@@ -19,7 +19,7 @@
 // ==/UserScript==
 /* jshint esversion: 6 */
 
-"use strict";
+'use strict';
 
 
-GM.addStyle("html body #centralNotice, html body [id*=frbanner], html body [id*=frb-inline] { display: none !important; }");
+GM.addStyle('html body #centralNotice, html body [id*=frbanner], html body [id*=frb-inline] { display: none !important; }');

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            Advanced Image Viewer
-// @namespace       autoimagefullsizeobp
+// @namespace       openbyte/advimgvwr
 // @author          OpenByte
 // @icon            https://image.ibb.co/mNU5Vm/icon.png
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
@@ -65,7 +65,7 @@
 /*jshint esversion: 6 */
 //old icons -> https://paste.ee/p/BwJdD
 
-"use strict";
+'use strict';
 
 
 (async () => {
@@ -84,7 +84,7 @@
     if (!String.prototype.endsWith) {
         String.prototype.endsWith = function(searchString, position) {
             let subjectString = this.toString();
-            if (typeof position !== "number" || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
+            if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
                 position = subjectString.length;
             }
             position -= searchString.length;
@@ -94,7 +94,7 @@
     }
     if (!String.prototype.includes) {
         String.prototype.includes = function(search, start) {
-            if (typeof start !== "number") {
+            if (typeof start !== 'number') {
                 start = 0;
             }
 
@@ -113,14 +113,14 @@
         w = window;
         d = w.document;
         de = d.documentElement;
-        db = d.body || d.getElementsByTagName("body")[0];
+        db = d.body || d.getElementsByTagName('body')[0];
     };
 
     updateShorts();
     let whenDOMContentLoaded = function(f) {
-        if (d.readyState === "interactive" || d.readyState === "complete")
+        if (d.readyState === 'interactive' || d.readyState === 'complete')
             f();
-        else document.addEventListener("DOMContentLoaded", f, false);
+        else document.addEventListener('DOMContentLoaded', f, false);
     };
 
     let isSVGDocument = function() {
@@ -128,7 +128,7 @@
     };
 
     let redirectBack = async function() {
-        await GM.deleteValue("redirected_from");
+        await GM.deleteValue('redirected_from');
         w.history.back();
     };
 
@@ -140,58 +140,58 @@
     let execute = async function() {
 
         const config = new Config({
-            id: "AIVConfig",
-            title: "Advanced Image Viewer Config",
+            id: 'AIVConfig',
+            title: 'Advanced Image Viewer Config',
             fields: {
-                "MAX_SCALE": {
-                    label: "Maximum Scale: ",
-                    type: "number",
+                'MAX_SCALE': {
+                    label: 'Maximum Scale: ',
+                    type: 'number',
                     default: -1
                 },
-                "MIN_SCALE": {
-                    label: "Minimum Scale: ",
-                    type: "number",
+                'MIN_SCALE': {
+                    label: 'Minimum Scale: ',
+                    type: 'number',
                     default: -1
                 },
-                "PADDING": {
-                    label: "Padding: ",
-                    type: "number",
+                'PADDING': {
+                    label: 'Padding: ',
+                    type: 'number',
                     default: 5
                 },
-                "ZOOM": {
-                    label: "Zoom Scale: ",
-                    type: "number",
+                'ZOOM': {
+                    label: 'Zoom Scale: ',
+                    type: 'number',
                     default: 2.5
                 },
-                "AUTO_ZOOM_SCROLL": {
-                    label: "Auto Scroll in Zoom: ",
-                    type: "checkbox",
+                'AUTO_ZOOM_SCROLL': {
+                    label: 'Auto Scroll in Zoom: ',
+                    type: 'checkbox',
                     default: true
                 },
-                "DISPLAY_RESOLUTION": {
-                    label: "Display Resolution: ",
-                    type: "checkbox",
+                'DISPLAY_RESOLUTION': {
+                    label: 'Display Resolution: ',
+                    type: 'checkbox',
                     default: true
                 },
-                "DISPLAY_MENU": {
-                    label: "Display Menu: ",
-                    type: "checkbox",
+                'DISPLAY_MENU': {
+                    label: 'Display Menu: ',
+                    type: 'checkbox',
                     default: true
                 },
-                "PRELOAD_GOOGLE_REVERSE_SEARCH_LINK": {
-                    label: "Preload Google Reverse Image Search Link: ",
-                    type: "checkbox",
+                'PRELOAD_GOOGLE_REVERSE_SEARCH_LINK': {
+                    label: 'Preload Google Reverse Image Search Link: ',
+                    type: 'checkbox',
                     default: false
                 },
-                "GLOBAL_BACKGROUND": {
-                    label: "Global Background: ",
-                    type: "text",
-                    default: "rgb(30, 30, 30)"
+                'GLOBAL_BACKGROUND': {
+                    label: 'Global Background: ',
+                    type: 'text',
+                    default: 'rgb(30, 30, 30)'
                 },
-                "IMAGE_BACKGROUND": {
-                    label: "Image Background: ",
-                    type: "text",
-                    default: "transparent"
+                'IMAGE_BACKGROUND': {
+                    label: 'Image Background: ',
+                    type: 'text',
+                    default: 'transparent'
                 }
             }
         });
@@ -199,33 +199,33 @@
         updateShorts();
 
         let isImageDocument = function() {
-            return db.children.length === 1 && db.children[0].tagName.toLowerCase() === "img";
+            return db.children.length === 1 && db.children[0].tagName.toLowerCase() === 'img';
         };
 
         if (!isImageDocument())
             return;
 
-        const MAX_SCALE = await config.getValue("MAX_SCALE"); //-1 --> INFINITE
-        const MIN_SCALE = await config.getValue("MIN_SCALE"); //-1 --> NONE
-        const PADDING = await config.getValue("PADDING"); //%
-        const ZOOM = await config.getValue("ZOOM"); // 0 --> DISABLED
-        const AUTO_ZOOM_SCROLL = await config.getValue("AUTO_ZOOM_SCROLL"); //true --> ENABLED
-        const DISPLAY_RESOLUTION = await config.getValue("DISPLAY_RESOLUTION"); //true --> ENABLED
-        const DISPLAY_MENU = await config.getValue("DISPLAY_MENU"); //true --> ENABLED
-        const PRELOAD_GOOGLE_REVERSE_SEARCH_LINK = await config.getValue("PRELOAD_GOOGLE_REVERSE_SEARCH_LINK"); //true --> ENABLED
-        const GLOBAL_BACKGROUND = await config.getValue("GLOBAL_BACKGROUND"); //[empty string] --> UNCHANGED
-        const IMAGE_BACKGROUND = await config.getValue("IMAGE_BACKGROUND"); //[empty string] --> UNCHANGED
+        const MAX_SCALE = await config.getValue('MAX_SCALE'); //-1 --> INFINITE
+        const MIN_SCALE = await config.getValue('MIN_SCALE'); //-1 --> NONE
+        const PADDING = await config.getValue('PADDING'); //%
+        const ZOOM = await config.getValue('ZOOM'); // 0 --> DISABLED
+        const AUTO_ZOOM_SCROLL = await config.getValue('AUTO_ZOOM_SCROLL'); //true --> ENABLED
+        const DISPLAY_RESOLUTION = await config.getValue('DISPLAY_RESOLUTION'); //true --> ENABLED
+        const DISPLAY_MENU = await config.getValue('DISPLAY_MENU'); //true --> ENABLED
+        const PRELOAD_GOOGLE_REVERSE_SEARCH_LINK = await config.getValue('PRELOAD_GOOGLE_REVERSE_SEARCH_LINK'); //true --> ENABLED
+        const GLOBAL_BACKGROUND = await config.getValue('GLOBAL_BACKGROUND'); //[empty string] --> UNCHANGED
+        const IMAGE_BACKGROUND = await config.getValue('IMAGE_BACKGROUND'); //[empty string] --> UNCHANGED
 
 
-        let img = d.getElementsByTagName("img")[0];
-        let container = d.createElement("div");
-        container.classList.add("theContainer", "horizontal");
+        let img = d.getElementsByTagName('img')[0];
+        let container = d.createElement('div');
+        container.classList.add('theContainer', 'horizontal');
         db.appendChild(container);
-        let figure = d.createElement("figure");
-        figure.classList.add("theFigure");
+        let figure = d.createElement('figure');
+        figure.classList.add('theFigure');
         container.appendChild(figure);
         figure.appendChild(img);
-        img.classList.add("theImg");
+        img.classList.add('theImg');
         const size = 100 - PADDING * 2;
 
         GM.addStyle(`* {
@@ -286,10 +286,10 @@
 
         let whenImageLoaded = function(f) {
             if (img.complete) f();
-            else img.addEventListener("load", f, false);
+            else img.addEventListener('load', f, false);
         };
         let whenImageError = function(f) {
-            img.addEventListener("error", f, false);
+            img.addEventListener('error', f, false);
         };
         let x, y;
         let updateXY = function() {
@@ -310,68 +310,68 @@
             updateXY();
             let prop = x / y,
                 imgprop = (img.naturalWidth || img.clientWidth) / (img.naturalHeight || img.clientHeight);
-            replaceClass2(container, prop < imgprop, "horizontal", "vertical");
+            replaceClass2(container, prop < imgprop, 'horizontal', 'vertical');
         };
         if (DISPLAY_MENU) {
             let addMenu = async function() {
                 let startLoading = function() {
-                    db.classList.add("loading");
+                    db.classList.add('loading');
                 };
                 let stopLoading = function() {
-                    db.classList.remove("loading");
+                    db.classList.remove('loading');
                 };
                 let createMenuItem = function(label, action, icon) {
-                    let item = d.createElement("li");
-                    item.classList.add("menu-item");
-                    if (typeof icon === "string") {
-                        let img = d.createElement("img");
-                        img.classList.add("menu-item-icon");
-                        img.setAttribute("src", icon);
+                    let item = d.createElement('li');
+                    item.classList.add('menu-item');
+                    if (typeof icon === 'string') {
+                        let img = d.createElement('img');
+                        img.classList.add('menu-item-icon');
+                        img.setAttribute('src', icon);
                         item.appendChild(img);
                     }
                     let labelc;
                     const actype = typeof action;
-                    if (actype === "string") {
-                        labelc = d.createElement("a");
-                        labelc.setAttribute("href", action);
+                    if (actype === 'string') {
+                        labelc = d.createElement('a');
+                        labelc.setAttribute('href', action);
                     } else {
-                        labelc = d.createElement("span");
-                        if (actype === "function")
-                            item.addEventListener("click", action, false);
+                        labelc = d.createElement('span');
+                        if (actype === 'function')
+                            item.addEventListener('click', action, false);
                     }
-                    labelc.classList.add("menu-item-label");
+                    labelc.classList.add('menu-item-label');
                     let labelt = d.createTextNode(label);
                     labelc.appendChild(labelt);
                     item.appendChild(labelc);
                     return item;
                 };
 
-                let menu = d.createElement("section");
-                menu.classList.add("menu", "collapsed");
-                let menutrigger = d.createElement("img");
-                menutrigger.classList.add("menu-trigger");
-                menutrigger.setAttribute("src", "data:image/svg+xml;charset=utf-8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE2LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPg0KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCINCgkgd2lkdGg9IjYxMnB4IiBoZWlnaHQ9IjYxMnB4IiB2aWV3Qm94PSIwIDAgNjEyIDYxMiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNjEyIDYxMjsiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+DQoJPGcgaWQ9Im1lbnUiPg0KCQk8Zz4NCgkJCTxwYXRoIGQ9Ik0wLDk1LjYyNXYzOC4yNWg2MTJ2LTM4LjI1SDB6IE0wLDMyNS4xMjVoNjEydi0zOC4yNUgwVjMyNS4xMjV6IE0wLDUxNi4zNzVoNjEydi0zOC4yNUgwVjUxNi4zNzV6Ii8+DQoJCTwvZz4NCgk8L2c+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8L3N2Zz4=");
-                menutrigger.addEventListener("click", function() {
-                    menu.classList.toggle("collapsed");
+                let menu = d.createElement('section');
+                menu.classList.add('menu', 'collapsed');
+                let menutrigger = d.createElement('img');
+                menutrigger.classList.add('menu-trigger');
+                menutrigger.setAttribute('src', 'data:image/svg+xml;charset=utf-8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE2LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPg0KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCINCgkgd2lkdGg9IjYxMnB4IiBoZWlnaHQ9IjYxMnB4IiB2aWV3Qm94PSIwIDAgNjEyIDYxMiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNjEyIDYxMjsiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+DQoJPGcgaWQ9Im1lbnUiPg0KCQk8Zz4NCgkJCTxwYXRoIGQ9Ik0wLDk1LjYyNXYzOC4yNWg2MTJ2LTM4LjI1SDB6IE0wLDMyNS4xMjVoNjEydi0zOC4yNUgwVjMyNS4xMjV6IE0wLDUxNi4zNzVoNjEydi0zOC4yNUgwVjUxNi4zNzV6Ii8+DQoJCTwvZz4NCgk8L2c+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8L3N2Zz4=');
+                menutrigger.addEventListener('click', function() {
+                    menu.classList.toggle('collapsed');
                 }, false);
                 menu.appendChild(menutrigger);
-                let menuitemlist = d.createElement("ul");
-                menuitemlist.classList.add("menu-item-list");
-                if (!location.protocol.includes("file") && !loc.startsWith("data:image")) {
-                    const url = "https://www.google.com/searchbyimage?&image_url=" + location.href;
+                let menuitemlist = d.createElement('ul');
+                menuitemlist.classList.add('menu-item-list');
+                if (!location.protocol.includes('file') && !loc.startsWith('data:image')) {
+                    const url = 'https://www.google.com/searchbyimage?&image_url=' + location.href;
                     let getGRISUrl = async function() {
                         return new Promise((resolve, reject) => {
                             GM.xmlHttpRequest({
                                 url: url,
-                                method: "GET",
+                                method: 'GET',
                                 onload: function(data) {
-                                    let doc = new DOMParser().parseFromString(data.responseText, "text/html");
-                                    let e = doc.querySelector("a[href*=\"tbs=simg:CAQ\"]:not([href*=\",isz:\"])");
+                                    let doc = new DOMParser().parseFromString(data.responseText, 'text/html');
+                                    let e = doc.querySelector('a[href*="tbs=simg:CAQ"]:not([href*=",isz:"])');
                                     if (e === null)
                                         resolve(url);
-                                    let href = e.getAttribute("href");
-                                    if (!href.includes("google."))
-                                        href = "//www.google.com" + href;
+                                    let href = e.getAttribute('href');
+                                    if (!href.includes('google.'))
+                                        href = '//www.google.com' + href;
                                     resolve(href);
                                 },
                                 onerror: function(data) {
@@ -383,9 +383,9 @@
 
                     if (PRELOAD_GOOGLE_REVERSE_SEARCH_LINK) {
                         let href = await getGRISUrl();
-                        menuitemlist.appendChild(createMenuItem("Google Reverse Image Search", href));
+                        menuitemlist.appendChild(createMenuItem('Google Reverse Image Search', href));
                     } else {
-                        menuitemlist.appendChild(createMenuItem("Google Reverse Image Search", async function() {
+                        menuitemlist.appendChild(createMenuItem('Google Reverse Image Search', async function() {
                             startLoading();
                             let href = await getGRISUrl();
                             stopLoading();
@@ -393,17 +393,17 @@
                         }));
                     }
                 }
-                if (!isSVGDocument() && !loc.endsWith("svg.view")) {
-                    menuitemlist.appendChild(createMenuItem("Upload to Imgur", function() {
+                if (!isSVGDocument() && !loc.endsWith('svg.view')) {
+                    menuitemlist.appendChild(createMenuItem('Upload to Imgur', function() {
                         startLoading();
                         GM.xmlHttpRequest({
-                            url: "https://api.imgur.com/3/image",
-                            method: "POST",
+                            url: 'https://api.imgur.com/3/image',
+                            method: 'POST',
                             headers: {
-                                "Authorization": "Client-ID 6660e28e848ee74",
-                                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
+                                'Authorization': 'Client-ID 6660e28e848ee74',
+                                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                             },
-                            data: "&image=" + location.href,
+                            data: '&image=' + location.href,
                             onload: function(data) {
                                 let response = JSON.parse(data.responseText);
                                 stopLoading();
@@ -412,7 +412,7 @@
                         });
                     }, false));
                 }
-                menuitemlist.appendChild(createMenuItem("Open Settings", "https://greasyfork.org/de/scripts/27738-advanced-image-viewer/config"));
+                menuitemlist.appendChild(createMenuItem('Open Settings', 'https://greasyfork.org/de/scripts/27738-advanced-image-viewer/config'));
                 menu.appendChild(menuitemlist);
                 db.appendChild(menu);
 
@@ -510,24 +510,24 @@
                 let x = (scalep - 100) * (((e.clientX - container.offsetLeft - figure.offsetLeft - img.offsetLeft) / img.clientWidth) - 0.5);
                 let y = (scalep - 100) * (((e.clientY - container.offsetTop - figure.offsetTop - img.offsetTop) / img.clientHeight) - 0.5);
 
-                figure.style.transform = "translate(" + -x + "%, " + -y + "%)";
+                figure.style.transform = 'translate(' + -x + '%, ' + -y + '%)';
             };
-            img.addEventListener("click", function(e) {
-                figure.classList.toggle("zoom");
-                if (!figure.classList.contains("zoom"))
-                    figure.style.transform = "none";
+            img.addEventListener('click', function(e) {
+                figure.classList.toggle('zoom');
+                if (!figure.classList.contains('zoom'))
+                    figure.style.transform = 'none';
                 else scroll(e);
             }, false);
             if (AUTO_ZOOM_SCROLL) {
-                db.addEventListener("mousemove", function(e) {
-                    if (!figure.classList.contains("zoom"))
+                db.addEventListener('mousemove', function(e) {
+                    if (!figure.classList.contains('zoom'))
                         return;
 
                     scroll(e);
                 }, false);
             }
         }
-        if (DISPLAY_RESOLUTION && !loc.endsWith("svg.view")) {
+        if (DISPLAY_RESOLUTION && !loc.endsWith('svg.view')) {
             GM.addStyle(`.resolution {
                                 color: #eee;
                                 font: normal 0.8em Arial, sans-serif;
@@ -536,10 +536,10 @@
                                 right: 0;
                                 padding: 5px 7px;
                             }`);
-            let rd = d.createElement("DIV");
-            rd.className = "resolution";
+            let rd = d.createElement('DIV');
+            rd.className = 'resolution';
             whenImageLoaded(async function() {
-                rd.innerHTML = img.naturalWidth + " x " + img.naturalHeight;
+                rd.innerHTML = img.naturalWidth + ' x ' + img.naturalHeight;
             });
             db.appendChild(rd);
         }
@@ -569,16 +569,16 @@
             update();
         });
         whenImageError(async function() {
-            await GM.setValue("do_not_run", loc);
+            await GM.setValue('do_not_run', loc);
         });
-        w.addEventListener("resize", update, true);
+        w.addEventListener('resize', update, true);
     };
 
 
     let run = async function() {
-        if (loc.endsWith(".svg.view")) {
-            if (isSVGDocument() || de.tagName === "Error") {
-                await GM.setValue("ignore_redirect", "true");
+        if (loc.endsWith('.svg.view')) {
+            if (isSVGDocument() || de.tagName === 'Error') {
+                await GM.setValue('ignore_redirect', 'true');
                 redirectBack();
             } else {
                 de.innerHTML = `<head>
@@ -589,20 +589,20 @@
                 await execute();
             }
         } else {
-            if (isSVGDocument() && location.protocol.toLowerCase() !== "file:") {
-                if (await GM.getValue("ignore_redirect") !== "true") {
-                    await GM.setValue("redirected_from", loc);
-                    location.href += ".view";
-                } else await GM.setValue("ignore_redirect", "false");
+            if (isSVGDocument() && location.protocol.toLowerCase() !== 'file:') {
+                if (await GM.getValue('ignore_redirect') !== 'true') {
+                    await GM.setValue('redirected_from', loc);
+                    location.href += '.view';
+                } else await GM.setValue('ignore_redirect', 'false');
             } else await execute();
         }
     };
 
 
-    if (await GM.getValue("redirected_from") === loc)
+    if (await GM.getValue('redirected_from') === loc)
         redirectBack();
-    else if (await GM.getValue("do_not_run") !== loc)
+    else if (await GM.getValue('do_not_run') !== loc)
         whenDOMContentLoaded(run);
-    else await GM.deleteValue("do_not_run");
+    else await GM.deleteValue('do_not_run');
 
 })();

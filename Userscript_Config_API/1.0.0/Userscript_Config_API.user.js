@@ -17,7 +17,7 @@
 // ==/UserScript==
 /*jshint esversion: 6 */
 
-"use strict";
+'use strict';
 
 
 if (!Node.prototype.remove)
@@ -31,9 +31,9 @@ class Config {
         this.version = '1.0.0';
         this.inputConfig = config;
         this.config = {
-            id: 'id' in config ? config.id : "config",
-            title: config.title || "Script Config",
-            stylePrefix: config.stylePrefix || "config-"
+            id: 'id' in config ? config.id : 'config',
+            title: config.title || 'Script Config',
+            stylePrefix: config.stylePrefix || 'config-'
         };
         this.config.css = `
         body.config-dialog-visible {
@@ -129,7 +129,7 @@ class Config {
         .${this.config.stylePrefix}save, .${this.config.stylePrefix}close {
             cursor: pointer;
         }
-    ` + (config.css || "");
+    ` + (config.css || '');
 
         this.config.fields = {};
         if (config.fields) {
@@ -138,12 +138,12 @@ class Config {
                     continue;
                 let f = config.fields[id];
                 this.config.fields[id] = {
-                    label: f.label || id + ": ",
-                    type: f.type.toLowerCase() || "text",
+                    label: f.label || id + ': ',
+                    type: f.type.toLowerCase() || 'text',
                     attributes: f.attributes || {}
                 };
-                this.config.fields[id].default = typeof f.default !== "undefined" ? f.default : Config.getDefaultForType(this.config.fields[id].type);
-                if (f.type === "radio" || f.type === "select")
+                this.config.fields[id].default = typeof f.default !== 'undefined' ? f.default : Config.getDefaultForType(this.config.fields[id].type);
+                if (f.type === 'radio' || f.type === 'select')
                     this.config.fields[id].values = {};
             }
         }
@@ -155,44 +155,44 @@ class Config {
     }
     static getDefaultForType(type) {
         switch (type) {
-            case "number":
-            case "range":
+            case 'number':
+            case 'range':
                 return 0;
-            case "checkbox":
+            case 'checkbox':
                 return false;
             default:
-                return "";
+                return '';
         }
     }
     async onsave() {
         await this.saveForm();
-        alert("Config saved");
+        alert('Config saved');
     }
     onclose() {
         this.close();
-    };
+    }
     async generateDOM() {
         if (!this.valuesLoaded)
             await this.loadValues();
         this.DOM = {
-            root: document.createElement("section"),
-            title: document.createElement("h1"),
-            content: document.createElement("div"),
-            options: document.createElement("div"),
-            save: document.createElement("button"),
-            close: document.createElement("img"),
-            header: document.createElement("header"),
+            root: document.createElement('section'),
+            title: document.createElement('h1'),
+            content: document.createElement('div'),
+            options: document.createElement('div'),
+            save: document.createElement('button'),
+            close: document.createElement('img'),
+            header: document.createElement('header'),
             fields: {}
         };
-        this.DOM.root.classList.add(this.config.stylePrefix + "root");
-        this.DOM.header.classList.add(this.config.stylePrefix + "header");
-        this.DOM.title.classList.add(this.config.stylePrefix + "title");
+        this.DOM.root.classList.add(this.config.stylePrefix + 'root');
+        this.DOM.header.classList.add(this.config.stylePrefix + 'header');
+        this.DOM.title.classList.add(this.config.stylePrefix + 'title');
         this.DOM.title.innerText = this.config.title;
-        this.DOM.content.classList.add(this.config.stylePrefix + "content");
-        this.DOM.options.classList.add(this.config.stylePrefix + "options");
-        this.DOM.save.classList.add(this.config.stylePrefix + "save");
-        this.DOM.save.innerText = "Save";
-        this.DOM.save.addEventListener("click", e => this.onsave(e), false);
+        this.DOM.content.classList.add(this.config.stylePrefix + 'content');
+        this.DOM.options.classList.add(this.config.stylePrefix + 'options');
+        this.DOM.save.classList.add(this.config.stylePrefix + 'save');
+        this.DOM.save.innerText = 'Save';
+        this.DOM.save.addEventListener('click', e => this.onsave(e), false);
         this.DOM.root.appendChild(this.DOM.header);
         this.DOM.header.appendChild(this.DOM.title);
         this.DOM.header.appendChild(this.DOM.close);
@@ -204,32 +204,32 @@ class Config {
             if (!this.fields.hasOwnProperty(id))
                 continue;
             let f = this.fields[id];
-            let field = document.createElement("div");
-            field.classList.add(this.config.stylePrefix + "field");
-            let input = document.createElement("input");
-            input.classList.add(this.config.stylePrefix + "input");
-            input.setAttribute("type", f.type);
+            let field = document.createElement('div');
+            field.classList.add(this.config.stylePrefix + 'field');
+            let input = document.createElement('input');
+            input.classList.add(this.config.stylePrefix + 'input');
+            input.setAttribute('type', f.type);
             switch (f.type) {
-                case "checkbox":
+                case 'checkbox':
                     if (f.value)
-                        input.setAttribute("checked", "checked");
+                        input.setAttribute('checked', 'checked');
                     break;
                 default:
-                    input.setAttribute("value", f.value);
+                    input.setAttribute('value', f.value);
             }
             for (let attr in f.attributes)
                 if (f.attributes.hasOwnProperty(attr))
                     input.setAttribute(attr, f.attributes[attr]);
-            input.setAttribute("id", this.config.stylePrefix + id);
-            let label = document.createElement("label");
-            label.classList.add(this.config.stylePrefix + "label");
-            label.setAttribute("for", this.config.stylePrefix + id);
+            input.setAttribute('id', this.config.stylePrefix + id);
+            let label = document.createElement('label');
+            label.classList.add(this.config.stylePrefix + 'label');
+            label.setAttribute('for', this.config.stylePrefix + id);
             let text = document.createTextNode(f.label);
             label.appendChild(text);
             field.appendChild(label);
             field.appendChild(input);
-            this.DOM.fields[id + "_input"] = input;
-            this.DOM.fields[id + "_label"] = label;
+            this.DOM.fields[id + '_input'] = input;
+            this.DOM.fields[id + '_label'] = label;
             this.DOM.fields[id] = field;
             this.DOM.options.appendChild(field);
         }
@@ -246,19 +246,19 @@ class Config {
         let val = await GM.getValue(name);
         if (!this.fields.hasOwnProperty(name))
             return val;
-        if (typeof val === "undefined")
+        if (typeof val === 'undefined')
             val = this.fields[name].default;
-        if (this.fields[name].type === "number")
+        if (this.fields[name].type === 'number')
             return Number(val);
         return val;
     }
     async getValue(name, direct = false) {
         if (direct)
             return await GM.getValue(name);
-        if (this.fields.hasOwnProperty(name) && this.fields[name].hasOwnProperty("value"))
+        if (this.fields.hasOwnProperty(name) && this.fields[name].hasOwnProperty('value'))
             return Promise.resolve(this.fields[name].value);
         else {
-            let val = await _getValue2(name);
+            let val = await this.getValueOrDefault(name);
             this.fields[name].value = val;
             return val;
         }
@@ -296,30 +296,30 @@ class Config {
         if (!this.DOMGenerated)
             await this.generateDOM();
         if (!includeHeader)
-            this.DOM.header.style.display = "none";
+            this.DOM.header.style.display = 'none';
         return await this._attachHelper(this.DOM.root, node, addStyle, defineClose, null);
-    };
+    }
     async showDialog(addStyle = true, defineClose = true) {
         if (!this.DOMGenerated)
             await this.generateDOM();
-        let shade = document.createElement("div");
+        let shade = document.createElement('div');
         let ret = await this._attachHelper(shade, document.body, addStyle, defineClose, () => {
-            document.body.classList.remove("config-dialog-visible");
+            document.body.classList.remove('config-dialog-visible');
             delete this.DOM.shade;
             delete this.DOM.dialog;
         });
-        document.body.classList.add("config-dialog-visible");
-        this.DOM.close.classList.add(this.config.stylePrefix + "close");
-        this.DOM.close.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRw%0D%0AOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAyMS45%0D%0AIDIxLjkiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDIxLjkgMjEuOSIgd2lkdGg9IjUxMnB4%0D%0AIiBoZWlnaHQ9IjUxMnB4Ij4KICA8cGF0aCBkPSJNMTQuMSwxMS4zYy0wLjItMC4yLTAuMi0wLjUs%0D%0AMC0wLjdsNy41LTcuNWMwLjItMC4yLDAuMy0wLjUsMC4zLTAuN3MtMC4xLTAuNS0wLjMtMC43bC0x%0D%0ALjQtMS40QzIwLDAuMSwxOS43LDAsMTkuNSwwICBjLTAuMywwLTAuNSwwLjEtMC43LDAuM2wtNy41%0D%0ALDcuNWMtMC4yLDAuMi0wLjUsMC4yLTAuNywwTDMuMSwwLjNDMi45LDAuMSwyLjYsMCwyLjQsMFMx%0D%0ALjksMC4xLDEuNywwLjNMMC4zLDEuN0MwLjEsMS45LDAsMi4yLDAsMi40ICBzMC4xLDAuNSwwLjMs%0D%0AMC43bDcuNSw3LjVjMC4yLDAuMiwwLjIsMC41LDAsMC43bC03LjUsNy41QzAuMSwxOSwwLDE5LjMs%0D%0AMCwxOS41czAuMSwwLjUsMC4zLDAuN2wxLjQsMS40YzAuMiwwLjIsMC41LDAuMywwLjcsMC4zICBz%0D%0AMC41LTAuMSwwLjctMC4zbDcuNS03LjVjMC4yLTAuMiwwLjUtMC4yLDAuNywwbDcuNSw3LjVjMC4y%0D%0ALDAuMiwwLjUsMC4zLDAuNywwLjNzMC41LTAuMSwwLjctMC4zbDEuNC0xLjRjMC4yLTAuMiwwLjMt%0D%0AMC41LDAuMy0wLjcgIHMtMC4xLTAuNS0wLjMtMC43TDE0LjEsMTEuM3oiIGZpbGw9IiNGRkZGRkYi%0D%0ALz4KPC9zdmc+";
-        this.DOM.close.addEventListener("click", e => this.onclose(e), false);
-        this.DOM.dialog = document.createElement("div");
-        this.DOM.dialog.classList.add(this.config.stylePrefix + "dialog");
+        document.body.classList.add('config-dialog-visible');
+        this.DOM.close.classList.add(this.config.stylePrefix + 'close');
+        this.DOM.close.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRw%0D%0AOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAyMS45%0D%0AIDIxLjkiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDIxLjkgMjEuOSIgd2lkdGg9IjUxMnB4%0D%0AIiBoZWlnaHQ9IjUxMnB4Ij4KICA8cGF0aCBkPSJNMTQuMSwxMS4zYy0wLjItMC4yLTAuMi0wLjUs%0D%0AMC0wLjdsNy41LTcuNWMwLjItMC4yLDAuMy0wLjUsMC4zLTAuN3MtMC4xLTAuNS0wLjMtMC43bC0x%0D%0ALjQtMS40QzIwLDAuMSwxOS43LDAsMTkuNSwwICBjLTAuMywwLTAuNSwwLjEtMC43LDAuM2wtNy41%0D%0ALDcuNWMtMC4yLDAuMi0wLjUsMC4yLTAuNywwTDMuMSwwLjNDMi45LDAuMSwyLjYsMCwyLjQsMFMx%0D%0ALjksMC4xLDEuNywwLjNMMC4zLDEuN0MwLjEsMS45LDAsMi4yLDAsMi40ICBzMC4xLDAuNSwwLjMs%0D%0AMC43bDcuNSw3LjVjMC4yLDAuMiwwLjIsMC41LDAsMC43bC03LjUsNy41QzAuMSwxOSwwLDE5LjMs%0D%0AMCwxOS41czAuMSwwLjUsMC4zLDAuN2wxLjQsMS40YzAuMiwwLjIsMC41LDAuMywwLjcsMC4zICBz%0D%0AMC41LTAuMSwwLjctMC4zbDcuNS03LjVjMC4yLTAuMiwwLjUtMC4yLDAuNywwbDcuNSw3LjVjMC4y%0D%0ALDAuMiwwLjUsMC4zLDAuNywwLjNzMC41LTAuMSwwLjctMC4zbDEuNC0xLjRjMC4yLTAuMiwwLjMt%0D%0AMC41LDAuMy0wLjcgIHMtMC4xLTAuNS0wLjMtMC43TDE0LjEsMTEuM3oiIGZpbGw9IiNGRkZGRkYi%0D%0ALz4KPC9zdmc+';
+        this.DOM.close.addEventListener('click', e => this.onclose(e), false);
+        this.DOM.dialog = document.createElement('div');
+        this.DOM.dialog.classList.add(this.config.stylePrefix + 'dialog');
         this.DOM.dialog.appendChild(this.DOM.root);
         this.DOM.shade = shade;
-        this.DOM.shade.classList.add(this.config.stylePrefix + "shade");
+        this.DOM.shade.classList.add(this.config.stylePrefix + 'shade');
         this.DOM.shade.appendChild(this.DOM.dialog);
         return ret;
-    };
+    }
     async saveValues() {
         if (!this.valuesLoaded)
             return false;
@@ -338,15 +338,15 @@ class Config {
     }
     getFieldValue(id) {
         switch (this.fields[id].type) {
-            case "checkbox":
-                return this.DOM.fields[id + "_input"].checked;
-            case "number":
-                return Number(this.DOM.fields[id + "_input"].value);
+            case 'checkbox':
+                return this.DOM.fields[id + '_input'].checked;
+            case 'number':
+                return Number(this.DOM.fields[id + '_input'].value);
             default:
-                return this.DOM.fields[id + "_input"].value;
+                return this.DOM.fields[id + '_input'].value;
         }
     }
 }
 
-if (typeof GM !== "undefined")
+if (typeof GM !== 'undefined')
     GM.Config = Config;
