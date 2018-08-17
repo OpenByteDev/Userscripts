@@ -3,7 +3,7 @@
 // @namespace       openbyte/asragi
 // @version         2.0.3
 // @author          OpenByte <development.openbyte@gmail.com>
-// @description     Always shows image resolution on Google Image Search.
+// @description     Always show image resolution on Google Image Search.
 // @homepageURL     https://github.com/OpenByteDev/Userscripts/tree/master/Always_Show_Resolution_On_GoogleImageSearch
 // @icon            https://raw.githubusercontent.com/OpenByteDev/Userscripts/master/Always_Show_Resolution_On_GoogleImageSearch/icon32.png
 // @icon64          https://raw.githubusercontent.com/OpenByteDev/Userscripts/master/Always_Show_Resolution_On_GoogleImageSearch/icon64.png
