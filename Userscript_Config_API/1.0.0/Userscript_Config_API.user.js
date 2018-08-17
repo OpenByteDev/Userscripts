@@ -1,12 +1,18 @@
 // ==UserScript==
 // @name            Userscript Config API
 // @namespace       openbyte/usconfig
-// @author          OpenByte
-// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
+// @version         1.0.0
+// @author          OpenByte <development.openbyte@gmail.com>
 // @description     API for implementing Config Pages for Userscripts.
+// @homepageURL     https://github.com/OpenByteDev/Userscripts/tree/master/Userscript_Config_API
+// @icon            https://raw.githubusercontent.com/OpenByteDev/Userscripts/master/Userscript_Config_API/icon.png
+// @icon64          https://raw.githubusercontent.com/OpenByteDev/Userscripts/master/Userscript_Config_API/icon64.png
+// @updateURL       https://raw.githubusercontent.com/OpenByteDev/Userscripts/master/Userscript_Config_API/Userscript_Config_API.meta.js
+// @downloadURL     https://raw.githubusercontent.com/OpenByteDev/Userscripts/master/Userscript_Config_API/Userscript_Config_API.user.js
+// @supportURL      https://github.com/OpenByteDev/Userscripts/issues
+// @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @license         MIT License
 // @encoding        utf-8
-// @version         1.0.0
 // @run-at          document-start
 // @grant           GM_addStyle
 // @grant           GM_setValue
