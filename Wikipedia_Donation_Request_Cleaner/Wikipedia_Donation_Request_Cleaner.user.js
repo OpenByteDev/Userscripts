@@ -13,6 +13,7 @@
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @include         /^https?:\/\/(?:.*?\.)?wikipedia\.org\/.*$/
 // @match           *://*.wikipedia.org/*
+// @license         MIT License; https://raw.githubusercontent.com/OpenByteDev/Userscripts/master/LICENSE
 // @run-at          document-start
 // @grant           GM_addStyle
 // @grant           GM.addStyle
