@@ -35,8 +35,8 @@
         ).map(parseFloat).filter(e => !isNaN(e));
     }
 
-    function max() {
-        return arguments.length === 0 ? undefined : Math.max.apply(this, Array.isArray(arguments[0]) ? arguments[0] : Array.from(arguments));
+    function max(...args) {
+        return args.length === 0 ? undefined : Math.max.apply(this, Array.isArray(args[0]) ? args[0] : args);
     }
 
     const paramname = 'tbs';

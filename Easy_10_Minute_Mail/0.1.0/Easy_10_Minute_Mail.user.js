@@ -47,7 +47,7 @@
     if (inputs.length === 0)
         return;
 
-    for (let input of inputs) {
+    for (const input of inputs) {
         const icon = document.createElement('IMG');
         icon.classList.add('e10mm-icon');
         icon.src = 'http://www.google.com/s2/favicons?domain=' + mmurl;

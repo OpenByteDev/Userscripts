@@ -136,10 +136,10 @@ class Config {
 
         this.config.fields = {};
         if (config.fields) {
-            for (let id in config.fields) {
+            for (const id in config.fields) {
                 if (!config.fields.hasOwnProperty(id))
                     continue;
-                let f = config.fields[id];
+                const f = config.fields[id];
                 this.config.fields[id] = {
                     label: f.label || id + ': ',
                     type: f.type.toLowerCase() || 'text',
@@ -203,13 +203,13 @@ class Config {
         this.DOM.content.appendChild(this.DOM.options);
         this.DOM.content.appendChild(this.DOM.save);
 
-        for (let id in this.fields) {
+        for (const id in this.fields) {
             if (!this.fields.hasOwnProperty(id))
                 continue;
-            let f = this.fields[id];
-            let field = document.createElement('div');
+            const f = this.fields[id];
+            const field = document.createElement('div');
             field.classList.add(this.config.stylePrefix + 'field');
-            let input = document.createElement('input');
+            const input = document.createElement('input');
             input.classList.add(this.config.stylePrefix + 'input');
             input.setAttribute('type', f.type);
             switch (f.type) {
@@ -220,14 +220,14 @@ class Config {
                 default:
                     input.setAttribute('value', f.value);
             }
-            for (let attr in f.attributes)
+            for (const attr in f.attributes)
                 if (f.attributes.hasOwnProperty(attr))
                     input.setAttribute(attr, f.attributes[attr]);
             input.setAttribute('id', this.config.stylePrefix + id);
-            let label = document.createElement('label');
+            const label = document.createElement('label');
             label.classList.add(this.config.stylePrefix + 'label');
             label.setAttribute('for', this.config.stylePrefix + id);
-            let text = document.createTextNode(f.label);
+            const text = document.createTextNode(f.label);
             label.appendChild(text);
             field.appendChild(label);
             field.appendChild(input);
@@ -240,7 +240,7 @@ class Config {
         return this.DOM;
     }
     async loadValues() {
-        for (let id in this.fields)
+        for (const id in this.fields)
             if (this.fields.hasOwnProperty(id))
                 this.fields[id].value = await this.getValueOrDefault(id);
         this.valuesLoaded = true;
@@ -261,7 +261,7 @@ class Config {
         if (this.fields.hasOwnProperty(name) && this.fields[name].hasOwnProperty('value'))
             return Promise.resolve(this.fields[name].value);
         else {
-            let val = await this.getValueOrDefault(name);
+            const val = await this.getValueOrDefault(name);
             this.fields[name].value = val;
             return val;
         }
@@ -305,8 +305,8 @@ class Config {
     async showDialog(addStyle = true, defineClose = true) {
         if (!this.DOMGenerated)
             await this.generateDOM();
-        let shade = document.createElement('div');
-        let ret = await this._attachHelper(shade, document.body, addStyle, defineClose, () => {
+        const shade = document.createElement('div');
+        const ret = await this._attachHelper(shade, document.body, addStyle, defineClose, () => {
             document.body.classList.remove('config-dialog-visible');
             delete this.DOM.shade;
             delete this.DOM.dialog;
@@ -326,14 +326,14 @@ class Config {
     async saveValues() {
         if (!this.valuesLoaded)
             return false;
-        for (let id in this.fields)
+        for (const id in this.fields)
             if (this.fields.hasOwnProperty(id))
                 await GM.setValue(id, this.fields[id].value);
     }
     async saveForm(saveValues = true) {
         if (!this.isOpen)
             return false;
-        for (let id in this.fields)
+        for (const id in this.fields)
             if (this.fields.hasOwnProperty(id))
                 this.fields[id].value = this.getFieldValue(id);
         if (saveValues)

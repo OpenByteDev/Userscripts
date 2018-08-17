@@ -158,7 +158,7 @@
                     return RLR.timeController.unit[RLR.timeController.unit.generalize(scale)];
                 },
                 getCurrent: num => {
-                    for (let s of ['year', 'week', 'day', 'hour', 'minute', 'second'])
+                    for (const s of ['year', 'week', 'day', 'hour', 'minute', 'second'])
                         if (num >= RLR.timeController.unit[s])
                             return s;
                 }
@@ -169,7 +169,7 @@
                 const trades = Object.keys(RLR.trades).sort((a, b) =>
                     RLR.trades[b].time.active - RLR.trades[a].time.active
                 );
-                for (let t of trades) {
+                for (const t of trades) {
                     if (!RLR.trades.hasOwnProperty(t))
                         continue;
                     if (RLR.trades[t].time.active >= 900 && !RLR.trades[t].refresh.pause.state && RLR.trades[t].refresh.state === 'dead' && RLR.trades[t].refresh.fails < RLR.settings.MAX_FAIL_COUNT) {
@@ -361,7 +361,7 @@
 
             //start timeController routines
             RLR.timeController.tuiid = setInterval(() => {
-                for (let t in RLR.trades) {
+                for (const t in RLR.trades) {
                     if (!RLR.trades.hasOwnProperty(t))
                         continue;
                     RLR.trades[t].time.active++;
@@ -395,7 +395,7 @@
 
                 if (RLR.settings.SHOW_PROGRESS_BAR) {
                     RLR.timeController.pbiid = setInterval(() => {
-                        for (let t in RLR.trades)
+                        for (const t in RLR.trades)
                             if (RLR.trades.hasOwnProperty(t) && RLR.trades[t].progress) {
                                 const p = RLR.trades[t].time.active / RLR.timeController.getTime(15, 'minute');
                                 RLR.trades[t].progress.bar.css('width', 100 * (p < 0 ? 0 : p > 1 ? 1 : p) + '%');
@@ -404,7 +404,7 @@
 
                     //add progress bar
                     if (RLR.settings.SHOW_PROGRESS_BAR)
-                        for (let t in RLR.trades)
+                        for (const t in RLR.trades)
                             if (RLR.trades.hasOwnProperty(t))
                                 RLR.addProgress(t);
                 }
@@ -413,7 +413,7 @@
             }
 
             //add refresh feature
-            for (let t in RLR.trades)
+            for (const t in RLR.trades)
                 if (RLR.trades.hasOwnProperty(t))
                     RLR.addRefreshFunc(t);
 
@@ -451,11 +451,11 @@
                     return RLR.compare(retryOnError, maxRetryCount, ++retryCount);
                 const delay = Math.round((new Date().getTime() - millis) / 2000);
                 const trades = RLR.genTrades(w);
-                for (let t in RLR.trades)
+                for (const t in RLR.trades)
                     if (RLR.trades.hasOwnProperty(t))
                         if (!(t in trades))
                             RLR.removeTrade(t);
-                for (let t in trades) {
+                for (const t in trades) {
                     if (!trades.hasOwnProperty(t))
                         continue;
                     if (t in RLR.trades) {

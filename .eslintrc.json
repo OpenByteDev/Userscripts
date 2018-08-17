@@ -19,6 +19,9 @@
         "quotes": ["error", "single"],
         "object-curly-spacing": ["error", "always"],
         "prefer-object-spread": "error",
-        "no-console": "off"
+        "no-console": "off",
+        "prefer-const": "error",
+        "prefer-arrow-callback": "error",
+        "prefer-rest-params": "error"
     }
 }
