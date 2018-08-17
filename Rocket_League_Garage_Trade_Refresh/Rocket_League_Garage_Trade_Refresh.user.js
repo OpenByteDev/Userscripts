@@ -3,7 +3,7 @@
 // @namespace       openbyte/rltr
 // @version         4.8.0
 // @author          OpenByte <development.openbyte@gmail.com>
-// @description     Adds a refresh functionality to rocket-league.com
+// @description     Automatically refreshes trades on rocket-league.com
 // @homepageURL     https://github.com/OpenByteDev/Userscripts/tree/master/Rocket_League_Garage_Trade_Refresh
 // @icon            https://raw.githubusercontent.com/OpenByteDev/Userscripts/master/Rocket_League_Garage_Trade_Refresh/icon32.png
 // @icon64          https://raw.githubusercontent.com/OpenByteDev/Userscripts/master/Rocket_League_Garage_Trade_Refresh/icon64.png
