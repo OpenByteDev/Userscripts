@@ -1,30 +1,28 @@
 // ==UserScript==
-// @name            Userscript Config API
 // @namespace       openbyte/usconfig
-// @version         1.0.0
 // @author          OpenByte <development.openbyte@gmail.com>
-// @description     API for implementing Config Pages for Userscripts.
 // @homepageURL     https://github.com/OpenByteDev/Userscripts/tree/master/Userscript_Config_API
-// @icon            https://raw.githubusercontent.com/OpenByteDev/Userscripts/master/Userscript_Config_API/icon.png
-// @icon64          https://raw.githubusercontent.com/OpenByteDev/Userscripts/master/Userscript_Config_API/icon64.png
 // @updateURL       https://raw.githubusercontent.com/OpenByteDev/Userscripts/master/Userscript_Config_API/Userscript_Config_API.meta.js
 // @downloadURL     https://raw.githubusercontent.com/OpenByteDev/Userscripts/master/Userscript_Config_API/Userscript_Config_API.user.js
 // @supportURL      https://github.com/OpenByteDev/Userscripts/issues
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
-// @license         MIT License
-// @encoding        utf-8
-// @run-at          document-start
+// @exclude         *
 // @grant           GM_addStyle
 // @grant           GM_setValue
 // @grant           GM_getValue
 // @grant           GM.addStyle
 // @grant           GM.setValue
 // @grant           GM.getValue
+
+// ==UserLibrary==
+// @name            Userscript Config API
+// @version         1.0.0
+// @description     API for implementing Config Pages for Userscripts.
+// @license         MIT License; https://raw.githubusercontent.com/OpenByteDev/Userscripts/master/LICENSE
 // ==/UserScript==
-/*jshint esversion: 6 */
+// ==/UserLibrary==
 
 'use strict';
-
 
 if (!Node.prototype.remove)
     Node.prototype.remove = function () {
@@ -354,5 +352,5 @@ class Config {
     }
 }
 
-if (typeof GM !== 'undefined')
+if (typeof GM === 'object' && GM !== null)
     GM.Config = Config;
