@@ -4,21 +4,21 @@
         "es6": true,
         "greasemonkey": true
     },
+    "globals": {
+        "GM": true
+    },
     "extends": "eslint:recommended",
     "parserOptions": {
         "ecmaVersion": 2018
     },
     "rules": {
         "linebreak-style": ["error", "windows"],
-        "trailing-comma": false,
-        "object-literal-sort-keys": false,
         "arrow-parens": ["error", "as-needed"],
-        "no-conditional-assignment": false,
         "max-line-length": [true, 120],
         "curly": "off",
-        "quotemark": [true, "single"],
+        "quotes": ["error", "single"],
         "object-curly-spacing": ["error", "always"],
         "prefer-object-spread": "error",
-        "promise-function-async": true
+        "no-console": "off"
     }
 }

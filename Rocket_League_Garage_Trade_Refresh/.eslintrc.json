@@ -1,0 +1,10 @@
+{
+    "extends": "../.eslintrc.json",
+    "env": {
+        "jquery": true
+    },
+    "globals": {
+        "Config": true
+    }
+}
+
