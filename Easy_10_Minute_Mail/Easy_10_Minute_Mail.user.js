@@ -18,7 +18,7 @@
 // @grant           GM.addStyle
 // ==/UserScript==
 
-"use strict";
+'use strict';
 
 
 (async () => {
