@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            Easy 10 Minute Mail
 // @namespace       openbyte/e10mm
-// @version         1.0.1
+// @version         1.0.2
 // @author          OpenByte <development.openbyte@gmail.com>
 // @description     Adds 10MinuteMail button to mail inputs.
 // @homepageURL     https://github.com/OpenByteDev/Userscripts/tree/master/Easy_10_Minute_Mail
