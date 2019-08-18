@@ -4,6 +4,7 @@
 
 - [Advanced Image Viewer](https://github.com/OpenByteDev/Userscripts/tree/master/Advanced_Image_Viewer)
 - [Always Show Resolution On GoogleImageSearch](https://github.com/OpenByteDev/Userscripts/tree/master/Always_Show_Resolution_On_GoogleImageSearch)
+- [Animepahe Auto Select Max Quality](https://github.com/OpenByteDev/Userscripts/tree/master/Animepahe_Auto_Select_Max_Quality)
 - [Easy 10 Minute Mail](https://github.com/OpenByteDev/Userscripts/tree/master/Easy_10_Minute_Mail)
 - [Rocket League Garage Error Reload](https://github.com/OpenByteDev/Userscripts/tree/master/Rocket_League_Garage_Error_Reload)
 - [Rocket League Garage Trade Refresh](https://github.com/OpenByteDev/Userscripts/tree/master/Rocket_League_Garage_Trade_Refresh)
