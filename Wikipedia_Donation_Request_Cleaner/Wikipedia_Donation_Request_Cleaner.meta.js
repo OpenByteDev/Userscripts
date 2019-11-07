@@ -1,7 +1,7 @@
 ﻿// ==UserScript==
 // @name            Wikipedia Donation Request Cleaner
 // @namespace       openbyte/wdrc
-// @version         2.0.1
+// @version         2.0.2
 // @author          OpenByte <development.openbyte@gmail.com>
 // @description     Remove wikipedia donation requests.
 // @homepageURL     https://github.com/OpenByteDev/Userscripts/tree/master/Wikipedia_Donation_Request_Cleaner
